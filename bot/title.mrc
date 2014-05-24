@@ -1,3 +1,6 @@
+; Made with help from Kin
+; irc.geekshed.net #Script-Help
+
 on 1:TEXT:*:#:title $1-
 alias -l title {
   if ($regex(title,$1-,/(https?)\x3A\/\/([^\s\n\/]+)(\/\S*)?/Si)) {
