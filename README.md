@@ -1,1 +1,1 @@
-You can find all my published scripts here.
+A collection of scripts I made.
