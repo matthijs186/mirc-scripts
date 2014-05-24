@@ -1,1 +1,4 @@
-A collection of scripts I made.
+# Scripts
+======
+
+A collection of my scripts.
