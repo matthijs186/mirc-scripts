@@ -24,8 +24,8 @@ on *:SOCKREAD:mcchecker:{
   sockread %mctemp
   if (Content-Length: isin %mctemp) {
     if ($gettok(%mctemp,2,32) == 4) { echo -a $sock($sockname).mark is a Minecraft Premium user. }
-    elseif ($gettok(%mctemp,2,32) == 5) { echo -a $sock(mcchecker).mark is not a Minecraft Premium user. }
-    else { echo -a Error determining Minecraft Premium status for $sock(mcchecker).mark $+ . }
-    sockclose mcchecker
+    elseif ($gettok(%mctemp,2,32) == 5) { echo -a $sock($sockname).mark is not a Minecraft Premium user. }
+    else { echo -a Error determining Minecraft Premium status for $sock($sockname).mark $+ . }
+    sockclose $sockname
   }
 }
