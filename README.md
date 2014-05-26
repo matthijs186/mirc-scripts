@@ -1,3 +1,5 @@
-# Scripts
+# Main
+A bunch of scripts and other files for the public.
 
-A collection of my scripts.
+### Questions?
+Connect using [IRC] (http://radio186.tk/irc/).
