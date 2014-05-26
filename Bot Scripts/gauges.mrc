@@ -1,30 +1,58 @@
-; gauges.mrc v0.2 (http://steamgaug.es)
-; Requires Kin's JSON parser because of API format.
-; irc.geekshed.net #Script-Help
+/* gauges.mrc v1.0
+* Visit http://steamgaug.es for more info.
+* irc.geekshed.net #Script-Help
+*/
 
 on 1:TEXT:!gauges:#:{
-  if ($sock(gauges)) { sockclose gauges }
+  if ($sock(gauges)) sockclose gauges
   sockopen gauges steamgaug.es 80
   sockmark gauges notice $nick
 }
 on *:SOCKOPEN:gauges:{
-  if ($sockerr) { msg $sock(gauges).mark Socket error: $sock(gauges).wsmsg }
-  sockwrite -nt $sockname GET /api/ HTTP/1.0
+  if ($sockerr) $sock($sockname).mark Socket error: $sock($sockname).wsmsg
+  sockwrite -nt $sockname GET /api/ HTTP/1.1
   sockwrite -nt $sockname Host: $sock($sockname).addr
   sockwrite -nt $sockname Connection: close
-  sockwrite -nt $sockname $crlf
+  sockwrite -nt $sockname
 }
 on *:SOCKREAD:gauges:{
-  var &sr
-  sockread $sock($sockname).rq &sr
-  var %dat $bvar(&sr,1,$sockbr).text
-  set -e %g.hash $jsonparse(steam,%dat)
+  var &sg
+  sockread $sock($sockname).rq &sg
+  var %dat $bvar(&sg,1,$sockbr).text
+  set -e %steam $jsonparse(steam,%dat)
 }
 on *:SOCKCLOSE:gauges:{
-  var %check = 7checking service, %up = 3up, %down = 4down
-  $sock(gauges).mark Steam Client: $replace($hget(%g.hash,ISteamClient),-1,%check,0,%up,1,%down) $+ , Steam Friends: $replace($hget(%g.hash,ISteamFriends),-1,%check,0,%up,1,%down) $+ , User Data API: $replace($hget(%g.hash,ISteamUser),-1,%check,0,%up,1,%down) $+ .
-  $sock(gauges).mark Team Fortress 2 Items API: $replace($hget(%g.hash,IEconItems_440),-1,%check,0,%up,1,%down) $+ , Team Fortress 2 Game Coordinator: $replace($hget(%g.hash,ISteamGameCoorindator_440),-1,%check,0,%up,1,%down) $+ .
-  $sock(gauges).mark Source: http://steamgaug.es
-  hfree %g.hash | unset %g.hash
-  halt
+  $sock($sockname).mark Steam Client is $gaugret($hget(%steam,ISteamClient)) $+ , Steam Friends is $gaugret($hget(%steam,ISteamFriends)) $+ .
+  $sock($sockname).mark Dota 2 Game Coordinator is $gaugret($hget(%steam,ISteamGameCoorindator_570)) $+ , Team Fortress 2 Game Coordinator is $gaugret($hget(%steam,ISteamGameCoorindator_440)) $+ .
+  $sock($sockname).mark Source: http://steamgaug.es
+  hfree %steam | unset %steam
+}
+alias gaugret {
+  if ($1 == -1) return 7unknown
+  elseif ($1 == 0) return 3online
+  elseif ($1 == 1) return 4offline
+  elseif ($1 == 2) return 7internal server error
+  elseif ($1 == 3) return 7empty response
+  elseif ($1 == 4) return 7not found
+  elseif ($1 == 5) return 7timeout
+  elseif ($1 == 6) return 7other error
+  else return $1
+}
+
+; Undocumented JSON parser made by Kin
+alias jsonparse {
+  var %h $1
+  var %json $2-
+  var %jsonpattern /"([^"]+)":("[^"]*"|[^"{][^,}]+)/g
+  var %matches $regex(jsonparse,%json,%jsonpattern)
+  ; load up a hash table with our item:data pairs
+  while (%matches > 0) {
+    var %item $regml(jsonparse,$calc((%matches * 2) - 1))
+    var %data $regml(jsonparse,$calc(%matches * 2))
+    if ("*" iswm %data) { %data = $mid(%data,2,$calc($len(%data) - 2)) }
+    hadd -m %h %item %data
+    dec %matches
+  }
+  if ($hget(%h,0).item > 0) { return %h }
+  else { return $null }
 }
