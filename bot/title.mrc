@@ -1,14 +1,15 @@
-; Made with help from Kin
+; title.mrc v1.1
+; Thanks Kin for helping with the regex.
 ; irc.geekshed.net #Script-Help
 
 on 1:TEXT:*:#:title $1-
 alias -l title {
-  if ($regex(title,$1-,/(https?)\x3A\/\/([^\s\n\/]+)(\/\S*)?/Si)) {
-    var %skiptypes png jpg jpeg txt swf | var %filetype $gettok($regml(3),-1,46)
-    if ($istok(%skiptypes,%filetype,32)) halt
-    if ($sock(title)) sockclose title
-    if (($regml(title,1) == http://) || ($regml(title,1) == www.))
-    if ($regml(title,1) == https) sockopen -e title $regml(title,2) 443
+  if ($regex(title,$1-,/(https?)\x3A\/\/([^\s\n\/]++)(\/\S*)?/Si)) {
+    var %skiptypes png jpg jpeg txt | var %filetype $gettok($regml(3),-1,46)
+    if ($istok(%skiptypes,%filetype,32)) { halt }
+    if ($sock(title)) { sockclose title }
+    if ($regml(title,1) == http) { sockopen title $regml(title,2) 80 }
+    if ($regml(title,1) == https) { sockopen -e title $regml(title,2) 443 }
     sockmark title $iif($regml(title,3),$v1,/) $1
   }
 }
