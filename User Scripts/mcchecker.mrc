@@ -1,3 +1,4 @@
+; mcchecker.mrc v1.0
 ; With help from Coyote` and hxck
 ; irc.geekshed.net #Script-Help
 
