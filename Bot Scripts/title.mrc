@@ -1,8 +1,8 @@
-; title.mrc v1.1
-; Thanks Kin for helping with the regex.
+; title.mrc v1.2
+; Thanks to Kin for helping with the regex.
 ; irc.geekshed.net #Script-Help
 
-on 1:TEXT:*:#:title $1-
+on 1:TEXT:*:#:title $chan $1-
 alias -l title {
   if ($regex(title,$1-,/(https?)\x3A\/\/([^\s\n\/]++)(\/\S*)?/Si)) {
     var %skiptypes png jpg jpeg txt | var %filetype $gettok($regml(3),-1,46)
