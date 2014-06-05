@@ -1,4 +1,4 @@
-/* appnews.mrc v0.2b
+/* appnews.mrc v0.2c
 * irc.geekshed.net #Script-Help
 */
 
@@ -7,7 +7,7 @@ on 1:TEXT:!appnews*:#:{
   else {
     if ($sock(appnews)) sockclose appnews
     sockopen appnews api.steampowered.com 80
-    sockmark appnews $2 notice $nick
+    sockmark appnews $2 msg $chan
   }
 }
 on *:SOCKOPEN:appnews:{
@@ -25,16 +25,15 @@ on *:SOCKREAD:appnews:{
 }
 on *:SOCKCLOSE:appnews:{
   var %s $gettok($sock($sockname).mark,2-,32)
-  if (!$hget(%anews,appnews)) %s No news found for appid $gettok($sock($sockname).mark,1,32) $+ .
-  else %s $chr(91) $noqt($hget(%anews,title)) $chr(93) $noqt($hget(%anews,url))
+  if (!$hget(%anews,appnews)) %s No result(s)/news found for appid $gettok($sock($sockname).mark,1,32) $+ .
+  else %s 5 $+ $chr(91) $hget(%anews,feedlabel) $chr(93) $+  $qt($hget(%anews,title)) $hget(%anews,url)
   hfree %anews | unset %anews
 }
 
-; Undocumented JSON parser made by Kin
 alias jsonparse {
   var %h $1
   var %json $2-
-  var %jsonpattern /"([^"]+)":("[^"]*"|[^"{][^,}]+)/g
+  var %jsonpattern /"([^"]+)"\s*:\s*("[^"]*"|[^"{][^,}]+)/g
   var %matches $regex(jsonparse,%json,%jsonpattern)
   ; load up a hash table with our item:data pairs
   while (%matches > 0) {
