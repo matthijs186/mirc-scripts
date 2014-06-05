@@ -1,4 +1,4 @@
-/* gauges.mrc v1.0
+/* gauges.mrc v1.0b
 * Visit http://steamgaug.es for more info.
 * irc.geekshed.net #Script-Help
 */
@@ -39,11 +39,10 @@ alias gaugret {
   else return $1
 }
 
-; Undocumented JSON parser made by Kin
 alias jsonparse {
   var %h $1
   var %json $2-
-  var %jsonpattern /"([^"]+)":("[^"]*"|[^"{][^,}]+)/g
+  var %jsonpattern /"([^"]+)"\s*:\s*("[^"]*"|[^"{][^,}]+)/g
   var %matches $regex(jsonparse,%json,%jsonpattern)
   ; load up a hash table with our item:data pairs
   while (%matches > 0) {
