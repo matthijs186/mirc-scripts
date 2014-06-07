@@ -14,10 +14,7 @@ alias -l title {
   }
 }
 on *:SOCKOPEN:title:{
-  if ($sockerr) {
-    if ($gettok($sock(title).wsmsg,1,32)) == [0]) { msg $gettok($sock(title).mark,2,32) Unknown error. }
-    else { msg $gettok($sock(title).mark,2,32) $sock(title).wsmsg }
-  }
+  if ($sockerr) { msg $gettok($sock(title).mark,2,32) $sock(title).wsmsg }
   else {
     sockwrite -nt $sockname GET $iif($gettok($sock($sockname).mark,1,32),$v1,/) HTTP/1.1
     sockwrite -nt $sockname Host: $sock($sockname).addr
