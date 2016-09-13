@@ -1,5 +1,7 @@
-# Main
-A bunch of scripts and other files for the public.
+# mirc-scripts
+A repository for managing all the scripts I create, and scripts that were created for me by others.
 
-### Questions?
-Visit the [wiki] (https://github.com/matthijs186/Main/wiki) or connect with [IRC] (https://kiwiirc.com/client/irc.geekshed.net/?nick=User_?#Script-Help).
+### Get in touch!
+Join me on [ByteIRC](http://byteirc.org/channel/matthijs186) (byteirc.org).
+
+Alternatively, you can join [#Script-Help](https://kiwiirc.com/client/irc.geekshed.net/?nick=Kiwi_?#Script-Help) (kiwiirc.com) on GeekShed.
